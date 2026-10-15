@@ -2,6 +2,12 @@ export const API = import.meta.env.VITE_API_URL;
 
 // Sends a request to the LetsGo API and returns the parsed JSON response.
 // Throws an Error carrying the server's message and HTTP status if the request fails.
+// apiFetch(path, {method = "GET", body, token}={}) does two things. The first is apiFetch(parameter1, parameter2). 
+// The second is that it automatically destructures the object in parameter2 and creates three variables: method, body, and token. 
+// If method is not assigned a value from the caller it automatically assigns "GET".
+// If no second argument is passed = {} allows the three variables of method, body and token to be created anyways. 
+
+
 export async function apiFetch(path, { method = "GET", body, token } = {}) {
   const headers = {};
   if (body) headers["Content-Type"] = "application/json";
