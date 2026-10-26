@@ -17,15 +17,22 @@ export default function Layout() {
 
   return (
     <>
-      <nav>
+      <header className="topbar">
+        <p className="wordmark">LetsGo</p>
+        <button type="button" className="text-button" onClick={handleLogout}>
+          Log out
+        </button>
+      </header>
+
+      <main className="page">
+        <Outlet />
+      </main>
+
+      <nav className="tabbar" aria-label="Main">
         <NavLink to="/day">My Day</NavLink>
         <NavLink to="/peeps">My Peeps</NavLink>
         <NavLink to="/responses">Responses</NavLink>
-        <button onClick={handleLogout}>Log out</button>
       </nav>
-      <main>
-        <Outlet />
-      </main>
     </>
   );
 }

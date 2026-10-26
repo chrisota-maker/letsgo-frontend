@@ -1,111 +1,594 @@
+/* =========================================================
+   LetsGo global styles
+   One stylesheet for the whole app. Colors live in :root
+   as variables so every page uses the same palette.
+   ========================================================= */
+
+/* ---------- Palette and fonts ---------- */
 :root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+  --navy: #14386B;
+  --cream: #FFFDF8;
+  --field: #F3EEE4;
+  --field-border: #E7DECD;
+  --card-border: #ECE4D3;
+  --blue: #1E6FD9;
+  --orange: #E8692A;
+  --sun: #FFC93C;
+  --sunset: #FF8A3D;
+  --muted: #6B6457;
+  --placeholder: #8A8172;
+  --error: #B5472A;
+  --error-bg: #FDECE7;
 
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
+  --font-body: "Nunito", system-ui, sans-serif;
+  --font-script: "Dancing Script", cursive;
 
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  font-family: var(--font-body);
+  color: var(--navy);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 body {
   margin: 0;
-}
-
-#root {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
-  text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
+  min-height: 100vh;
+  /* The soft sky shows around the phone column on a laptop */
+  background: linear-gradient(180deg, #CFE8FF 0%, #EAF5FF 100%);
 }
 
 h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
-}
-
-h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
+h2,
+p,
+ol {
   margin: 0;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+button,
+input {
+  font: inherit;
+  color: inherit;
 }
 
-code {
+/* ---------- Phone-width app column ---------- */
+#root {
+  position: relative;
+  max-width: 430px;
+  min-height: 100vh;
+  margin: 0 auto;
+  background: var(--cream);
+  overflow: clip;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Ocean aqua glow in the bottom-right corner */
+#root::after {
+  content: "";
+  position: absolute;
+  right: -120px;
+  bottom: -120px;
+  width: 380px;
+  height: 380px;
+  background: radial-gradient(circle, rgba(120, 205, 220, 0.35) 0%, rgba(120, 205, 220, 0) 70%);
+  pointer-events: none;
+}
+
+/* ---------- Accessibility ---------- */
+/* Hides labels visually but keeps them for screen readers */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Shared pieces ---------- */
+.wordmark {
+  font-family: var(--font-script);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--navy);
+}
+
+.field {
+  width: 100%;
+  height: 46px;
+  padding: 0 18px;
+  border-radius: 23px;
+  border: 1px solid var(--field-border);
+  background: var(--field);
+  font-size: 16px; /* 16px stops phones from zooming in on focus */
+}
+
+.field::placeholder {
+  color: var(--placeholder);
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(30, 111, 217, 0.18);
+}
+
+.btn {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: 24px;
+  background: var(--blue);
+  color: #fff;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.btn:hover {
+  filter: brightness(1.05);
+}
+
+.btn:focus-visible {
+  outline: 3px solid rgba(30, 111, 217, 0.35);
+  outline-offset: 2px;
+}
+
+.link {
+  color: var(--orange);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.alert {
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: var(--error-bg);
+  color: var(--error);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* ---------- Login and Register ---------- */
+.auth-page {
+  position: relative;
+  flex: 1;
+  padding: 0 28px 40px;
+}
+
+/* The yellow corner with the orange ribbon */
+.corner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 284px;
+  height: 300px;
+  pointer-events: none;
+}
+
+.auth-brand {
+  position: relative; /* sits above the corner */
+  padding-top: 250px;
+}
+
+.auth-brand .wordmark {
+  font-size: 56px;
+}
+
+.tagline {
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  opacity: 0.8;
+}
+
+.auth-form {
+  position: relative;
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.auth-form .btn {
+  margin-top: 6px;
+}
+
+.auth-switch {
+  position: relative;
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---------- Logged-in layout ---------- */
+.topbar {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 22px 20px 0;
+}
+
+.topbar .wordmark {
+  font-size: 34px;
+}
+
+.text-button {
+  border: none;
+  background: none;
+  padding: 6px 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.page {
+  position: relative;
+  flex: 1;
+  padding: 0 16px 24px;
+}
+
+/* Bottom tab bar */
+.tabbar {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  justify-content: space-around;
+  height: 64px;
+  background: var(--cream);
+  border-top: 1px solid var(--card-border);
+}
+
+.tabbar a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  flex: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--placeholder);
+  text-decoration: none;
+}
+
+/* The little bar above each tab; orange when active */
+.tabbar a::before {
+  content: "";
+  width: 24px;
+  height: 5px;
+  border-radius: 3px;
+  background: transparent;
+}
+
+/* NavLink adds the "active" class to the current page automatically */
+.tabbar a.active {
+  color: var(--navy);
+}
+
+.tabbar a.active::before {
+  background: var(--sunset);
+}
+
+/* ---------- My Day ---------- */
+.datebar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 4px 0;
+}
+
+.round-button {
+  flex: none; /* never squish the buttons */
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: var(--field);
+  color: var(--navy);
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.round-button:hover {
+  background: var(--field-border);
+}
+
+.date-label {
+  flex: 1; /* takes the middle space, so the text stays centered */
+  text-align: center;
+}
+
+.date-label .eyebrow {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+
+.date-label h1 {
+  font-size: 21px;
+}
+
+.status {
+  margin-top: 24px;
+  text-align: center;
+}
+
+/* The numbered list of events */
+.event-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  counter-reset: event; /* starts the numbering at 0 */
+}
+
+.card {
+  display: flex;
+  gap: 12px;
+  padding: 12px 14px;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: 18px;
+  box-shadow: 0 2px 6px rgba(20, 56, 107, 0.06);
+  counter-increment: event; /* +1 for each card */
+}
+
+/* The blue numbered circle, drawn by CSS from the counter */
+.card::before {
+  content: counter(event);
+  flex: none;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px; /* lines the circle up with the title text */
+  border-radius: 50%;
+  background: var(--blue);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.card-where {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.chip {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 3px 10px;
+  border-radius: 10px;
+  background: #FFF1DC;
+  color: #C65A1E;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ---------- Add to my day ---------- */
+.add-button {
+  margin-top: 16px;
+}
+
+.btn-secondary {
+  background: var(--field);
+  color: var(--navy);
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+/* Dims the page behind the form */
+.sheet-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 10;
+  background: rgba(20, 56, 107, 0.35);
+}
+
+/* The form panel that slides up from the bottom */
+.sheet {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%); /* centers it inside the phone column */
+  z-index: 11;
+  width: 100%;
+  max-width: 430px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 14px 22px 26px;
+  background: var(--cream);
+  border-radius: 26px 26px 0 0;
+  animation: slide-up 0.2s ease-out;
+}
+
+@keyframes slide-up {
+  from {
+    transform: translate(-50%, 100%);
+  }
+  to {
+    transform: translate(-50%, 0);
+  }
+}
+
+.sheet-handle {
+  width: 42px;
+  height: 5px;
+  margin: 0 auto 14px;
+  border-radius: 3px;
+  background: var(--field-border);
+}
+
+.sheet-heading {
+  font-size: 20px;
+  margin-bottom: 6px;
+}
+
+.event-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-label {
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Time-of-day pills: real radio buttons, styled to look like pills */
+.pill-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.pill-group legend {
+  margin-bottom: 6px;
+  padding: 0;
+}
+
+.pill {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Hide the round radio dot, but keep the input usable */
+.pill input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+
+.pill span {
+  display: inline-block;
+  padding: 8px 14px;
+  border-radius: 18px;
+  border: 1px solid var(--field-border);
+  background: var(--field);
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+/* The selected pill turns orange */
+.pill input:checked + span {
+  background: var(--sunset);
+  border-color: var(--sunset);
+  color: #fff;
+}
+
+/* Keyboard users can see which pill has focus */
+.pill input:focus-visible + span {
+  outline: 3px solid rgba(30, 111, 217, 0.35);
+  outline-offset: 2px;
+}
+
+.sheet-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+/* ---------- Card buttons: move, edit, delete ---------- */
+.card-actions {
+  flex: none;
+  display: grid;
+  grid-template-columns: 30px 30px; /* 2 x 2 grid of buttons */
+  gap: 6px;
+  align-content: start;
+}
+
+.icon-button {
+  width: 30px;
+  height: 28px;
+  border: none;
+  border-radius: 9px;
+  background: var(--field);
+  color: var(--navy);
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  background: var(--field-border);
+}
+
+.icon-button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.icon-button.danger {
+  color: var(--error);
+}
+
+.action-error {
+  margin-top: 12px;
+}
+
+/* ---------- Confirm dialog ---------- */
+.confirm-message {
+  margin-top: 4px;
+  color: var(--muted);
   font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+  line-height: 1.4;
+}
+
+.btn-danger {
+  background: var(--error);
 }
