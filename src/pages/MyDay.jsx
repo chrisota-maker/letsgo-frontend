@@ -1,97 +1,44 @@
 import { useEffect, useState } from "react";
 import { apiFetch } from "../api/client";
 import { useAuth } from "../auth/AuthContext";
+import { getTodayString, shiftDate } from "../utils/dates";
+import DateBar from "../components/DateBar";
 import EventForm from "../components/EventForm";
 import EventItem from "../components/EventItem";
 import ConfirmDialog from "../components/ConfirmDialog";
-
-// Builds today's date as "YYYY-MM-DD" in local time (same approach as the seed).
-function getTodayString() {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-// Turns "2026-10-25" into a local Date object (no timezone shift).
-function toLocalDate(dateString) {
-  const parts = dateString.split("-");
-  const year = Number(parts[0]);
-  const month = Number(parts[1]) - 1; // JavaScript months start at 0
-  const day = Number(parts[2]);
-  return new Date(year, month, day);
-}
-
-// Turns a local Date object back into "YYYY-MM-DD".
-function toDateString(localDate) {
-  const year = localDate.getFullYear();
-  const month = String(localDate.getMonth() + 1).padStart(2, "0");
-  const day = String(localDate.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
-
-// Moves a "YYYY-MM-DD" date forward or back by a number of days.
-// shiftDate("2026-10-31", 1) → "2026-11-01"
-function shiftDate(dateString, days) {
-  const localDate = toLocalDate(dateString);
-  localDate.setDate(localDate.getDate() + days); // handles month and year rollover
-  return toDateString(localDate);
-}
-
-// Turns "2026-10-25" into "Sun, Oct 25" for display.
-function formatDateLabel(dateString) {
-  const localDate = toLocalDate(dateString);
-  return localDate.toLocaleDateString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-  });
-}
-
-// Picks the small label above the date: Today, Yesterday, Tomorrow, Future, or Past.
-function getEyebrow(dateString) {
-  const selected = toLocalDate(dateString);
-  const today = toLocalDate(getTodayString());
-
-  const oneDay = 1000 * 60 * 60 * 24; // milliseconds in a day
-  // Math.round smooths out the hour lost or gained on daylight saving days.
-  const difference = Math.round((selected - today) / oneDay);
-
-  if (difference === 0) {
-    return "Today";
-  } else if (difference === -1) {
-    return "Yesterday";
-  } else if (difference === 1) {
-    return "Tomorrow";
-  } else if (difference > 1) {
-    return "Future";
-  } else {
-    return "Past";
-  }
-}
+import ShareSheet from "../components/ShareSheet";
 
 export default function MyDay() {
   const { token, logout } = useAuth();
 
   const [date, setDate] = useState(getTodayString());
   const [events, setEvents] = useState([]);
+  const [shares, setShares] = useState([]);               // friends this day is shared with
+  const [responses, setResponses] = useState([]);         // friends' responses to my events
   const [error, setError] = useState(null);               // problems loading the day
   const [actionError, setActionError] = useState(null);   // problems with move or delete
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);         // the "add" form
   const [editingEvent, setEditingEvent] = useState(null);   // the event being edited, or null
   const [deletingEvent, setDeletingEvent] = useState(null); // the event waiting for delete confirmation, or null
+  const [showShare, setShowShare] = useState(false);       // the share sheet
+  const [refreshCount, setRefreshCount] = useState(0);     // bump this to reload everything
 
   useEffect(() => {
-    async function loadEvents() {
+    async function loadDay() {
       setLoading(true);
       setError(null);
       setActionError(null);
 
       try {
-        const data = await apiFetch(`/events?event_date=${date}`, { token: token });
-        setEvents(data.events);
+        const eventsData = await apiFetch(`/events?event_date=${date}`, { token: token });
+        setEvents(eventsData.events);
+
+        const sharesData = await apiFetch(`/day_shares?share_date=${date}`, { token: token });
+        setShares(sharesData.shares);
+
+        const responsesData = await apiFetch(`/responses/coming?event_date=${date}`, { token: token });
+        setResponses(responsesData.responses);
       } catch (err) {
         if (err.status === 401) {
           logout();
@@ -103,8 +50,8 @@ export default function MyDay() {
       setLoading(false);
     }
 
-    loadEvents();
-  }, [date, token, logout]);
+    loadDay();
+  }, [date, token, logout, refreshCount]);
 
   // ---------- Date arrows ----------
   function handlePreviousDay() {
@@ -124,8 +71,6 @@ export default function MyDay() {
     setShowForm(false);
   }
 
-  // Called by EventForm with the values the user typed.
-  // If this throws, EventForm catches it and shows the message.
   async function handleAddEvent(values) {
     const data = await apiFetch("/events", {
       method: "POST",
@@ -133,13 +78,12 @@ export default function MyDay() {
       body: {
         title: values.title,
         location: values.location,
-        event_date: date, // the day currently on screen
+        event_date: date,
         time_of_day: values.time_of_day,
         start_time: values.start_time,
       },
     });
 
-    // Add the new event to the end of the list, then close the form.
     setEvents([...events, data.event]);
     setShowForm(false);
   }
@@ -165,7 +109,6 @@ export default function MyDay() {
       },
     });
 
-    // Swap the old version of the event for the updated one.
     const updatedEvents = events.map((item) => {
       if (item.id === data.event.id) {
         return data.event;
@@ -186,7 +129,6 @@ export default function MyDay() {
         token: token,
         body: { direction: direction },
       });
-      // The backend sends back the whole day in its new order.
       setEvents(data.events);
     } catch (err) {
       setActionError(err.message);
@@ -194,7 +136,6 @@ export default function MyDay() {
   }
 
   // ---------- Delete ----------
-  // Step 1: the ✕ button opens the confirm dialog.
   function handleAskDelete(event) {
     setDeletingEvent(event);
   }
@@ -203,7 +144,6 @@ export default function MyDay() {
     setDeletingEvent(null);
   }
 
-  // Step 2: the dialog's Delete button actually deletes.
   async function handleConfirmDelete() {
     setActionError(null);
     try {
@@ -211,7 +151,6 @@ export default function MyDay() {
         method: "DELETE",
         token: token,
       });
-      // Keep every event except the deleted one.
       const remainingEvents = events.filter((item) => item.id !== deletingEvent.id);
       setEvents(remainingEvents);
     } catch (err) {
@@ -220,36 +159,60 @@ export default function MyDay() {
     setDeletingEvent(null);
   }
 
-  // "YYYY-MM-DD" strings sort like dates, so a simple < comparison works.
-  // Past days are read-only: no adding, moving, editing, or deleting.
+  // ---------- Share ----------
+  function handleOpenShare() {
+    setShowShare(true);
+  }
+
+  function handleCloseShare() {
+    setShowShare(false);
+  }
+
+  function handleShareSaved() {
+    setShowShare(false);
+    setRefreshCount(refreshCount + 1); // reload so "Shared with" is up to date
+  }
+
+  // ---------- Helpers for the page ----------
   const isPastDay = date < getTodayString();
+
+  // Names for "Shared with: Mom, Dani", and ids to pre-check the share sheet.
+  const sharedNames = [];
+  const sharedFriendIds = [];
+  for (const share of shares) {
+    sharedNames.push(share.friend_display_name);
+    sharedFriendIds.push(share.friend_id);
+  }
+
+  // Only the responses that belong to one event.
+  function getResponsesForEvent(eventId) {
+    const matching = [];
+    for (const response of responses) {
+      if (response.event_id === eventId) {
+        matching.push(response);
+      }
+    }
+    return matching;
+  }
 
   return (
     <>
-      <div className="datebar">
-        <button
-          type="button"
-          className="round-button"
-          onClick={handlePreviousDay}
-          aria-label="Previous day"
-        >
-          ‹
-        </button>
+      <DateBar date={date} onPrevious={handlePreviousDay} onNext={handleNextDay} />
 
-        <div className="date-label">
-          <p className="eyebrow">{getEyebrow(date)}</p>
-          <h1>{formatDateLabel(date)}</h1>
+      {!loading && !error && (
+        <div className="shared-bar">
+          {sharedNames.length > 0 ? (
+            <span>Shared with <b>{sharedNames.join(", ")}</b></span>
+          ) : (
+            <span className="muted">Not shared yet</span>
+          )}
+          {!isPastDay && (
+            <button type="button" className="link-button" onClick={handleOpenShare}>
+              Share my day
+            </button>
+          )}
         </div>
-
-        <button
-          type="button"
-          className="round-button"
-          onClick={handleNextDay}
-          aria-label="Next day"
-        >
-          ›
-        </button>
-      </div>
+      )}
 
       {loading && <p className="status muted">Loading...</p>}
 
@@ -267,6 +230,7 @@ export default function MyDay() {
             <EventItem
               key={event.id}
               event={event}
+              responses={getResponsesForEvent(event.id)}
               isFirst={index === 0}
               isLast={index === events.length - 1}
               readOnly={isPastDay}
@@ -286,11 +250,7 @@ export default function MyDay() {
       )}
 
       {showForm && (
-        <EventForm
-          heading="Add to my day"
-          onSave={handleAddEvent}
-          onCancel={handleCloseForm}
-        />
+        <EventForm heading="Add to my day" onSave={handleAddEvent} onCancel={handleCloseForm} />
       )}
 
       {editingEvent && (
@@ -309,6 +269,15 @@ export default function MyDay() {
           confirmLabel="Delete"
           onConfirm={handleConfirmDelete}
           onCancel={handleCancelDelete}
+        />
+      )}
+
+      {showShare && (
+        <ShareSheet
+          date={date}
+          sharedFriendIds={sharedFriendIds}
+          onSaved={handleShareSaved}
+          onCancel={handleCloseShare}
         />
       )}
     </>
