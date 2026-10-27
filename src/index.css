@@ -592,3 +592,176 @@ input {
 .btn-danger {
   background: var(--error);
 }
+
+/* ---------- My Peeps tabs ---------- */
+.subtabs {
+  display: flex;
+  gap: 4px;
+  margin-top: 16px;
+  padding: 4px;
+  background: var(--field);
+  border-radius: 18px;
+}
+
+.subtabs a {
+  flex: 1;
+  padding: 8px 0;
+  border-radius: 14px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--placeholder);
+  text-decoration: none;
+}
+
+.subtabs a.active {
+  background: #fff;
+  color: var(--navy);
+  box-shadow: 0 1px 3px rgba(20, 56, 107, 0.12);
+}
+
+.page-heading {
+  margin-top: 18px;
+  font-size: 21px;
+}
+
+/* ---------- Find Friend ---------- */
+.search-field {
+  margin-top: 10px;
+}
+
+.notice {
+  margin-top: 10px;
+  padding: 9px 14px;
+  border-radius: 14px;
+  background: #E3F6EC;
+  color: #1E8A57;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.notice-spacing {
+  margin-top: 10px;
+}
+
+.section {
+  margin-top: 22px;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--orange);
+}
+
+.count {
+  padding: 1px 7px;
+  border-radius: 9px;
+  background: var(--sunset);
+  color: #fff;
+  font-size: 11px;
+  letter-spacing: 0;
+}
+
+.person-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  box-shadow: 0 2px 6px rgba(20, 56, 107, 0.05);
+}
+
+.avatar {
+  flex: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: #FFE7A8;
+  color: #C65A1E;
+  font-size: 15px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.person-info {
+  flex: 1;
+  min-width: 0; /* lets long names shrink instead of pushing the buttons off */
+}
+
+.person-name {
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.person-handle {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.small-button {
+  flex: none;
+  padding: 7px 13px;
+  border: none;
+  border-radius: 15px;
+  background: var(--field);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.small-button:hover {
+  background: var(--field-border);
+}
+
+.small-button.primary {
+  background: var(--blue);
+  color: #fff;
+}
+
+.small-button.primary:hover {
+  filter: brightness(1.05);
+  background: var(--blue);
+}
+
+.waiting {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--placeholder);
+}
+
+.tag {
+  flex: none;
+  padding: 5px 11px;
+  border-radius: 14px;
+  background: #E6F1FF;
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.empty-note {
+  margin-top: 8px;
+  font-size: 14px;
+}
