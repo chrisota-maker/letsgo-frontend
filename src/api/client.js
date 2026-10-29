@@ -19,7 +19,11 @@ export async function apiFetch(path, { method = "GET", body, token } = {}) {
     body: body ? JSON.stringify(body) : undefined,
   });
 
+  //body: body ? JSON.stringify(body) means if there is a body use that and convert to JSON if not mark it as undefined.
+
   const text = await response.text();
+  //this is a protection for line 27, if the response is blank as in the case of a delete the JSON.parse would crash.
+
   const data = text ? JSON.parse(text) : null;
 
   if (!response.ok) {

@@ -765,3 +765,186 @@ input {
   margin-top: 8px;
   font-size: 14px;
 }
+
+/* ---------- Shared with bar (My Day) ---------- */
+.shared-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: #FFF3D6;
+  font-size: 14px;
+}
+
+.shared-bar b {
+  font-weight: 700;
+}
+
+.link-button {
+  flex: none;
+  border: none;
+  background: none;
+  padding: 0;
+  color: var(--orange);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ---------- Share sheet ---------- */
+.share-subtitle {
+  margin-bottom: 10px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.share-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.share-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: #fff;
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  cursor: pointer;
+}
+
+.share-option input {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  accent-color: var(--sunset); /* colors the checkbox */
+}
+
+.share-option .person-name,
+.share-option .person-handle {
+  display: block;
+}
+
+/* ---------- Responses on my events ---------- */
+.response-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.response-chip {
+  padding: 3px 10px;
+  border-radius: 10px;
+  background: #E3F6EC;
+  color: #1E8A57;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* ---------- Response buttons on friends' events ---------- */
+.response-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.response-pill {
+  padding: 6px 11px;
+  border-radius: 14px;
+  border: 1px solid var(--field-border);
+  background: var(--field);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.response-pill.selected {
+  background: var(--sunset);
+  border-color: var(--sunset);
+  color: #fff;
+}
+
+.response-pill:disabled {
+  cursor: default;
+}
+
+.response-remove {
+  border: none;
+  background: none;
+  padding: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.response-error {
+  width: 100%;
+  margin-top: 6px;
+}
+
+.response-readonly {
+  display: inline-block;
+  margin-top: 10px;
+}
+
+/* ---------- My Peeps pages ---------- */
+.day-owner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.day-owner h2 {
+  font-size: 17px;
+}
+
+/* Cards that shouldn't show the blue number (Day View, Responses) */
+.card.no-number::before {
+  display: none;
+}
+
+.card-owner {
+  margin-bottom: 2px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--blue);
+}
+
+/* A thin line after each time-of-day heading */
+.time-group::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--card-border);
+}
+
+/* ---------- Coming to Mine ---------- */
+.responder-list {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.responder {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 14px;
+}
