@@ -32,3 +32,6 @@ function App() {
 }
 
 export default App;
+
+
+//Note there is a gap in the token process where we do not check if localstorage already has a token and skips the login page and goes straight to /day aka MyDay page. So current state a user has to log in everytime. 
